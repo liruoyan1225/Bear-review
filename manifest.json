@@ -1,0 +1,19 @@
+{
+  "name": "小熊复盘 - 每周成长记录",
+  "short_name": "小熊复盘",
+  "description": "简约可爱的每周复盘应用，记录你的成长轨迹",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FDF6E3",
+  "theme_color": "#FDF6E3",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "assets/bear-logo.jpg",
+      "sizes": "1024x1024",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["lifestyle", "productivity"]
+}

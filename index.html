@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#FDF6E3">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>小熊复盘 - 每周成长记录</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="assets/bear-icon-new.png">
+    <style>
+        :root {
+            --bg-primary: #FDF6E3;
+            --bg-secondary: #FFF9ED;
+            --bg-card: #FFFFFF;
+            --text-primary: #5D4E37;
+            --text-secondary: #8B7355;
+            --text-muted: #A89880;
+            --accent-warm: #E8B89D;
+            --accent-brown: #8B7355;
+            --accent-coral: #E8A87C;
+            --accent-sage: #A8C69F;
+            --accent-lavender: #C9B1FF;
+            --accent-sky: #A8D8EA;
+            --accent-rose: #FFB6B9;
+            --shadow-soft: 0 4px 20px rgba(139, 115, 85, 0.1);
+            --shadow-card: 0 2px 12px rgba(139, 115, 85, 0.08);
+            --radius-lg: 20px;
+            --radius-md: 14px;
+            --radius-sm: 10px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* App Container */
+        .app {
+            max-width: 430px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: var(--bg-primary);
+            position: relative;
+            padding-bottom: 80px;
+        }
+
+        /* Header */
+        .header {
+            padding: 20px 20px 16px;
+            background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+        }
+
+        .logo-text h1 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .logo-text p {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .week-badge {
+            background: linear-gradient(135deg, var(--accent-warm), var(--accent-coral));
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            padding: 4px;
+            box-shadow: var(--shadow-card);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: var(--accent-warm);
+            color: white;
+        }
+
+        /* Pages */
+        .page {
+            display: none;
+            padding: 16px 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Home Page */
+        .greeting-card {
+            background: linear-gradient(135deg, #FFF5E6 0%, #FFE8D6 100%);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-soft);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .greeting-card::after {
+            content: '';
+            position: absolute;
+            right: -20px;
+            bottom: -20px;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, rgba(232, 184, 157, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .greeting-card h2 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .greeting-card p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            box-shadow: var(--shadow-card);
+        }
+
+        .stat-card .label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .stat-card .value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .stat-card .trend {
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .trend.up { color: var(--accent-sage); }
+        .trend.down { color: var(--accent-coral); }
+        .trend.same { color: var(--text-muted); }
+
+        /* Action Button */
+        .action-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--accent-warm), var(--accent-coral));
+            border: none;
+            border-radius: var(--radius-md);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(232, 184, 157, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+
+        .action-btn img {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Review Page */
+        .review-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .review-header img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 12px;
+        }
+
+        .review-header h2 {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .review-header p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Dimension Section */
+        .dimension-section {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-card);
+        }
+
+        .dimension-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #F0EBE3;
+        }
+
+        .dimension-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .dimension-title {
+            flex: 1;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .dimension-score {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent-brown);
+        }
+
+        /* Score Slider */
+        .score-item {
+            margin-bottom: 14px;
+        }
+
+        .score-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .score-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .score-label span {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .score-label .score-value {
+            font-weight: 600;
+            color: var(--accent-brown);
+            background: var(--bg-secondary);
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 13px;
+        }
+
+        .score-slider {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: linear-gradient(90deg, var(--accent-rose) 0%, var(--accent-warm) 50%, var(--accent-sage) 100%);
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .score-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            cursor: pointer;
+        }
+
+        /* Summary Section */
+        .summary-section {
+            background: linear-gradient(135deg, #FFF5E6 0%, #FFE8D6 100%);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .summary-section h3 {
+            font-size: 16px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .summary-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid transparent;
+            border-radius: var(--radius-sm);
+            background: white;
+            font-size: 14px;
+            color: var(--text-primary);
+            resize: none;
+            transition: border-color 0.2s;
+        }
+
+        .summary-input:focus {
+            outline: none;
+            border-color: var(--accent-warm);
+        }
+
+        /* Goals Section */
+        .goals-section {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow-card);
+        }
+
+        .goal-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-sm);
+            margin-bottom: 10px;
+        }
+
+        .goal-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .goal-number {
+            width: 28px;
+            height: 28px;
+            background: var(--accent-warm);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .goal-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        .goal-input:focus {
+            outline: none;
+        }
+
+        /* Save Button */
+        .save-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--accent-sage), #8BC78B);
+            border: none;
+            border-radius: var(--radius-md);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 16px;
+            box-shadow: 0 4px 16px rgba(168, 198, 159, 0.4);
+        }
+
+        /* Trend Page */
+        .trend-chart {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-card);
+        }
+
+        .trend-chart h3 {
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+
+        .chart-container {
+            height: 200px;
+            position: relative;
+        }
+
+        .chart-bars {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            height: 160px;
+            padding: 0 10px;
+            border-bottom: 2px solid #F0EBE3;
+        }
+
+        .chart-bar-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chart-bar {
+            width: 20px;
+            background: linear-gradient(180deg, var(--accent-warm), var(--accent-coral));
+            border-radius: 4px 4px 0 0;
+            transition: height 0.3s ease;
+        }
+
+        .chart-label {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .dimension-trends {
+            display: grid;
+            gap: 12px;
+        }
+
+        .dimension-trend-item {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: var(--shadow-card);
+        }
+
+        .trend-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .trend-info {
+            flex: 1;
+        }
+
+        .trend-info .name {
+            font-weight: 500;
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .trend-info .avg {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .trend-value {
+            text-align: right;
+        }
+
+        .trend-value .score {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .trend-value .change {
+            font-size: 12px;
+        }
+
+        /* History Page */
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .history-item {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            box-shadow: var(--shadow-card);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .history-item:active {
+            transform: scale(0.98);
+        }
+
+        .history-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .history-date {
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .history-score {
+            background: var(--accent-warm);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .history-summary {
+            font-size: 13px;
+            color: var(--text-secondary);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .empty-state img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin-bottom: 16px;
+            opacity: 0.8;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .empty-state p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 430px;
+            background: var(--bg-card);
+            padding: 10px 20px 20px;
+            box-shadow: 0 -4px 20px rgba(139, 115, 85, 0.1);
+            display: flex;
+            justify-content: space-around;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: color 0.2s;
+        }
+
+        .nav-item.active {
+            color: var(--accent-warm);
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .nav-item span {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--text-primary);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 14px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.4);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            max-width: 340px;
+            width: 100%;
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal h3 {
+            font-size: 18px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .modal p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-btns {
+            display: flex;
+            gap: 12px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .modal-btn.cancel {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+        }
+
+        .modal-btn.confirm {
+            background: var(--accent-warm);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-top">
+                <div class="logo">
+                    <img src="assets/bear-logo.jpg" alt="小熊">
+                    <div class="logo-text">
+                        <h1>小熊复盘</h1>
+                        <p>记录成长，遇见更好的自己</p>
+                    </div>
+                </div>
+                <div class="week-badge" id="weekBadge">第 1 周</div>
+            </div>
+            <div class="tab-nav" id="tabNav">
+                <button class="tab-btn active" data-tab="home">首页</button>
+                <button class="tab-btn" data-tab="review">复盘</button>
+                <button class="tab-btn" data-tab="trend">趋势</button>
+                <button class="tab-btn" data-tab="history">历史</button>
+            </div>
+        </header>
+
+        <!-- Home Page -->
+        <div class="page active" id="homePage">
+            <div class="greeting-card">
+                <h2>👋 今天复盘了吗？</h2>
+                <p>每周花15分钟，记录你的成长轨迹</p>
+            </div>
+
+            <div class="quick-stats">
+                <div class="stat-card">
+                    <div class="label">本周总评</div>
+                    <div class="value" id="homeTotalScore">--</div>
+                    <div class="trend" id="homeTrend">暂无数据</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">累计复盘</div>
+                    <div class="value" id="homeTotalReviews">0</div>
+                    <div class="trend same">次</div>
+                </div>
+            </div>
+
+            <button class="action-btn" onclick="switchTab('review')">
+                <img src="assets/bear-happy.jpg" alt="">
+                开始本周复盘
+            </button>
+        </div>
+
+        <!-- Review Page -->
+        <div class="page" id="reviewPage">
+            <div class="review-header">
+                <img src="assets/bear-thinking.jpg" alt="">
+                <h2>本周复盘</h2>
+                <p id="reviewDate">2024年1月第1周</p>
+            </div>
+
+            <!-- Dimensions -->
+            <div id="dimensionsContainer"></div>
+
+            <!-- Summary -->
+            <div class="summary-section">
+                <h3>📝 本周总结</h3>
+                <textarea class="summary-input" id="summaryHarvest" rows="2" placeholder="本周最大的收获是什么？"></textarea>
+                <textarea class="summary-input" id="summaryImprove" rows="2" placeholder="哪些地方可以做得更好？" style="margin-top:10px"></textarea>
+            </div>
+
+            <!-- Goals -->
+            <div class="goals-section">
+                <h3 style="margin-bottom:14px">🎯 下周目标</h3>
+                <div class="goal-item">
+                    <div class="goal-number">1</div>
+                    <input type="text" class="goal-input" id="goal1" placeholder="最重要的目标">
+                </div>
+                <div class="goal-item">
+                    <div class="goal-number">2</div>
+                    <input type="text" class="goal-input" id="goal2" placeholder="次要目标">
+                </div>
+                <div class="goal-item">
+                    <div class="goal-number">3</div>
+                    <input type="text" class="goal-input" id="goal3" placeholder="其他目标">
+                </div>
+            </div>
+
+            <button class="save-btn" onclick="saveReview()">💾 保存复盘</button>
+        </div>
+
+        <!-- Trend Page -->
+        <div class="page" id="trendPage">
+            <div class="trend-chart">
+                <h3>📊 近8周趋势</h3>
+                <div class="chart-container">
+                    <div class="chart-bars" id="chartBars"></div>
+                </div>
+            </div>
+
+            <div class="dimension-trends" id="dimensionTrends"></div>
+        </div>
+
+        <!-- History Page -->
+        <div class="page" id="historyPage">
+            <div class="history-list" id="historyList"></div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" data-nav="home">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span>首页</span>
+            </button>
+            <button class="nav-item" data-nav="review">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+                <span>复盘</span>
+            </button>
+            <button class="nav-item" data-nav="trend">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+                <span>趋势</span>
+            </button>
+            <button class="nav-item" data-nav="history">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span>历史</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Dimension Configuration
+        const dimensions = [
+            {
+                id: 'work',
+                name: '工作',
+                icon: '💼',
+                color: '#E8B89D',
+                items: [
+                    { id: 'task', name: '核心任务完成度' },
+                    { id: 'efficiency', name: '工作效率与专注力' },
+                    { id: 'team', name: '团队协作与沟通' },
+                    { id: 'growth', name: '职业成长与学习' }
+                ]
+            },
+            {
+                id: 'study',
+                name: '学习',
+                icon: '📚',
+                color: '#A8C69F',
+                items: [
+                    { id: 'time', name: '学习时长达成' },
+                    { id: 'absorb', name: '知识吸收与理解' },
+                    { id: 'output', name: '学习成果输出' }
+                ]
+            },
+            {
+                id: 'life',
+                name: '生活',
+                icon: '🏠',
+                color: '#C9B1FF',
+                items: [
+                    { id: 'social', name: '家庭/社交关系' },
+                    { id: 'hobby', name: '个人兴趣与休闲' },
+                    { id: 'environment', name: '居住环境整洁度' }
+                ]
+            },
+            {
+                id: 'health',
+                name: '健康',
+                icon: '💪',
+                color: '#A8D8EA',
+                items: [
+                    { id: 'exercise', name: '运动次数与时长' },
+                    { id: 'diet', name: '饮食健康程度' },
+                    { id: 'sleep', name: '睡眠质量' }
+                ]
+            },
+            {
+                id: 'finance',
+                name: '财务',
+                icon: '💰',
+                color: '#FFB6B9',
+                items: [
+                    { id: 'budget', name: '预算执行情况' },
+                    { id: 'saving', name: '储蓄/投资进展' },
+                    { id: 'control', name: '非必要消费控制' }
+                ]
+            }
+        ];
+
+        // State
+        let currentScores = {};
+        let reviews = [];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            renderDimensions();
+            updateHomeStats();
+            updateWeekBadge();
+            setupEventListeners();
+        });
+
+        // Load data from localStorage
+        function loadData() {
+            const saved = localStorage.getItem('bearReviews');
+            if (saved) {
+                reviews = JSON.parse(saved);
+            }
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('bearReviews', JSON.stringify(reviews));
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Tab navigation
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    switchTab(btn.dataset.tab);
+                });
+            });
+
+            // Bottom navigation
+            document.querySelectorAll('.nav-item').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    switchTab(btn.dataset.nav);
+                });
+            });
+        }
+
+        // Switch tab
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.tab === tabName);
+            });
+            document.querySelectorAll('.nav-item').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.nav === tabName);
+            });
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(tabName + 'Page').classList.add('active');
+
+            if (tabName === 'trend') {
+                renderTrendPage();
+            } else if (tabName === 'history') {
+                renderHistoryPage();
+            } else if (tabName === 'home') {
+                updateHomeStats();
+            }
+        }
+
+        // Get current week number
+        function getWeekNumber() {
+            const now = new Date();
+            const start = new Date(now.getFullYear(), 0, 1);
+            const diff = now - start;
+            const oneWeek = 604800000;
+            return Math.ceil((diff + start.getDay() * 86400000) / oneWeek);
+        }
+
+        // Update week badge
+        function updateWeekBadge() {
+            const weekNum = getWeekNumber();
+            document.getElementById('weekBadge').textContent = `第 ${weekNum} 周`;
+
+            const now = new Date();
+            const month = now.getMonth() + 1;
+            document.getElementById('reviewDate').textContent = `${now.getFullYear()}年${month}月第${weekNum}周`;
+        }
+
+        // Render dimensions
+        function renderDimensions() {
+            const container = document.getElementById('dimensionsContainer');
+            container.innerHTML = '';
+
+            dimensions.forEach(dim => {
+                currentScores[dim.id] = {};
+
+                const section = document.createElement('div');
+                section.className = 'dimension-section';
+                section.innerHTML = `
+                    <div class="dimension-header">
+                        <div class="dimension-icon" style="background: ${dim.color}20">${dim.icon}</div>
+                        <div class="dimension-title">${dim.name}维度</div>
+                        <div class="dimension-score" id="avg-${dim.id}">--</div>
+                    </div>
+                    <div class="score-items"></div>
+                `;
+
+                const itemsContainer = section.querySelector('.score-items');
+                dim.items.forEach(item => {
+                    currentScores[dim.id][item.id] = 5;
+
+                    const itemEl = document.createElement('div');
+                    itemEl.className = 'score-item';
+                    itemEl.innerHTML = `
+                        <div class="score-label">
+                            <span>${item.name}</span>
+                            <span class="score-value" id="val-${dim.id}-${item.id}">5</span>
+                        </div>
+                        <input type="range" class="score-slider" min="1" max="10" value="5"
+                            data-dim="${dim.id}" data-item="${item.id}">
+                    `;
+
+                    const slider = itemEl.querySelector('.score-slider');
+                    slider.addEventListener('input', (e) => {
+                        const val = e.target.value;
+                        document.getElementById(`val-${dim.id}-${item.id}`).textContent = val;
+                        currentScores[dim.id][item.id] = parseInt(val);
+                        updateDimensionAverage(dim.id);
+                    });
+
+                    itemsContainer.appendChild(itemEl);
+                });
+
+                container.appendChild(section);
+            });
+        }
+
+        // Update dimension average
+        function updateDimensionAverage(dimId) {
+            const scores = Object.values(currentScores[dimId]);
+            const avg = (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1);
+            document.getElementById(`avg-${dimId}`).textContent = avg;
+        }
+
+        // Save review
+        function saveReview() {
+            const now = new Date();
+            const weekNum = getWeekNumber();
+
+            // Calculate averages
+            const averages = {};
+            let totalSum = 0;
+            let totalItems = 0;
+
+            dimensions.forEach(dim => {
+                const scores = Object.values(currentScores[dim.id]);
+                const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
+                averages[dim.id] = avg;
+                totalSum += scores.reduce((a, b) => a + b, 0);
+                totalItems += scores.length;
+            });
+
+            const totalAvg = (totalSum / totalItems).toFixed(1);
+
+            const review = {
+                id: Date.now(),
+                date: now.toISOString(),
+                weekNum: weekNum,
+                year: now.getFullYear(),
+                scores: JSON.parse(JSON.stringify(currentScores)),
+                averages: averages,
+                totalAvg: parseFloat(totalAvg),
+                summary: {
+                    harvest: document.getElementById('summaryHarvest').value,
+                    improve: document.getElementById('summaryImprove').value
+                },
+                goals: [
+                    document.getElementById('goal1').value,
+                    document.getElementById('goal2').value,
+                    document.getElementById('goal3').value
+                ]
+            };
+
+            // Check if this week already has a review
+            const existingIndex = reviews.findIndex(r => r.weekNum === weekNum && r.year === now.getFullYear());
+            if (existingIndex >= 0) {
+                reviews[existingIndex] = review;
+                showToast('已更新本周复盘！');
+            } else {
+                reviews.unshift(review);
+                showToast('保存成功！小熊为你点赞 🐻');
+            }
+
+            saveData();
+            updateHomeStats();
+
+            // Clear form
+            setTimeout(() => {
+                document.getElementById('summaryHarvest').value = '';
+                document.getElementById('summaryImprove').value = '';
+                document.getElementById('goal1').value = '';
+                document.getElementById('goal2').value = '';
+                document.getElementById('goal3').value = '';
+                renderDimensions();
+            }, 500);
+        }
+
+        // Update home stats
+        function updateHomeStats() {
+            const totalReviews = reviews.length;
+            document.getElementById('homeTotalReviews').textContent = totalReviews;
+
+            if (totalReviews > 0) {
+                const latest = reviews[0];
+                document.getElementById('homeTotalScore').textContent = latest.totalAvg.toFixed(1);
+
+                if (totalReviews >= 2) {
+                    const prev = reviews[1];
+                    const diff = latest.totalAvg - prev.totalAvg;
+                    const trendEl = document.getElementById('homeTrend');
+                    if (diff > 0.2) {
+                        trendEl.textContent = `↑ 较上周 +${diff.toFixed(1)}`;
+                        trendEl.className = 'trend up';
+                    } else if (diff < -0.2) {
+                        trendEl.textContent = `↓ 较上周 ${diff.toFixed(1)}`;
+                        trendEl.className = 'trend down';
+                    } else {
+                        trendEl.textContent = '→ 与上周持平';
+                        trendEl.className = 'trend same';
+                    }
+                } else {
+                    document.getElementById('homeTrend').textContent = '首次复盘';
+                    document.getElementById('homeTrend').className = 'trend same';
+                }
+            }
+        }
+
+        // Render trend page
+        function renderTrendPage() {
+            // Render chart
+            const chartBars = document.getElementById('chartBars');
+            chartBars.innerHTML = '';
+
+            const recentReviews = reviews.slice(0, 8).reverse();
+            const maxScore = 10;
+
+            recentReviews.forEach((review, index) => {
+                const height = (review.totalAvg / maxScore) * 140;
+                const barGroup = document.createElement('div');
+                barGroup.className = 'chart-bar-group';
+                barGroup.innerHTML = `
+                    <div class="chart-bar" style="height: ${height}px"></div>
+                    <div class="chart-label">W${review.weekNum}</div>
+                `;
+                chartBars.appendChild(barGroup);
+            });
+
+            if (recentReviews.length === 0) {
+                chartBars.innerHTML = '<div style="color: var(--text-muted); font-size: 14px; text-align: center; width: 100%; padding-top: 60px;">暂无数据，开始复盘吧！</div>';
+            }
+
+            // Render dimension trends
+            const trendsContainer = document.getElementById('dimensionTrends');
+            trendsContainer.innerHTML = '';
+
+            dimensions.forEach(dim => {
+                const recentScores = reviews.slice(0, 4).map(r => r.averages[dim.id]).filter(s => s !== undefined);
+                const avg = recentScores.length > 0 ? (recentScores.reduce((a, b) => a + b, 0) / recentScores.length).toFixed(1) : '--';
+
+                let change = '--';
+                let changeClass = 'same';
+                if (recentScores.length >= 2) {
+                    const diff = recentScores[0] - recentScores[recentScores.length - 1];
+                    if (diff > 0.3) {
+                        change = `↑ +${diff.toFixed(1)}`;
+                        changeClass = 'up';
+                    } else if (diff < -0.3) {
+                        change = `↓ ${diff.toFixed(1)}`;
+                        changeClass = 'down';
+                    } else {
+                        change = '→ 持平';
+                    }
+                }
+
+                const item = document.createElement('div');
+                item.className = 'dimension-trend-item';
+                item.innerHTML = `
+                    <div class="trend-icon" style="background: ${dim.color}20">${dim.icon}</div>
+                    <div class="trend-info">
+                        <div class="name">${dim.name}</div>
+                        <div class="avg">近${recentScores.length}周平均</div>
+                    </div>
+                    <div class="trend-value">
+                        <div class="score">${avg}</div>
+                        <div class="change ${changeClass}">${change}</div>
+                    </div>
+                `;
+                trendsContainer.appendChild(item);
+            });
+        }
+
+        // Render history page
+        function renderHistoryPage() {
+            const container = document.getElementById('historyList');
+
+            if (reviews.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <img src="assets/bear-thinking.jpg" alt="">
+                        <h3>还没有复盘记录</h3>
+                        <p>开始你的第一次复盘吧！</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = reviews.map(review => {
+                const date = new Date(review.date);
+                const dateStr = `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
+                const summary = review.summary.harvest || review.summary.improve || '暂无总结';
+
+                return `
+                    <div class="history-item" onclick="viewHistory(${review.id})">
+                        <div class="history-item-header">
+                            <div class="history-date">${dateStr} · 第${review.weekNum}周</div>
+                            <div class="history-score">${review.totalAvg.toFixed(1)}</div>
+                        </div>
+                        <div class="history-summary">${summary}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // View history detail
+        function viewHistory(id) {
+            const review = reviews.find(r => r.id === id);
+            if (!review) return;
+
+            // Fill the review form with history data
+            currentScores = JSON.parse(JSON.stringify(review.scores));
+
+            // Update sliders and values
+            dimensions.forEach(dim => {
+                dim.items.forEach(item => {
+                    const val = currentScores[dim.id][item.id];
+                    const slider = document.querySelector(`[data-dim="${dim.id}"][data-item="${item.id}"]`);
+                    if (slider) {
+                        slider.value = val;
+                        document.getElementById(`val-${dim.id}-${item.id}`).textContent = val;
+                    }
+                });
+                updateDimensionAverage(dim.id);
+            });
+
+            document.getElementById('summaryHarvest').value = review.summary.harvest || '';
+            document.getElementById('summaryImprove').value = review.summary.improve || '';
+            document.getElementById('goal1').value = review.goals[0] || '';
+            document.getElementById('goal2').value = review.goals[1] || '';
+            document.getElementById('goal3').value = review.goals[2] || '';
+
+            switchTab('review');
+            showToast('已加载历史记录');
+        }
+
+        // Show toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
